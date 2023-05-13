@@ -21,6 +21,7 @@ package com.yahoo.ycsb;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.yahoo.ycsb.measurements.Measurements;
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
@@ -447,7 +448,7 @@ public class Client
                     usageMessage();
                     System.exit(0);
                 }
-                int tcount=Integer.parseInt(args[argindex]);
+                int tcount=NumberUtils.toInt(args[argindex]);
                 props.setProperty("threadcount", tcount+"");
                 argindex++;
             }
@@ -459,7 +460,7 @@ public class Client
                     usageMessage();
                     System.exit(0);
                 }
-                int ttarget=Integer.parseInt(args[argindex]);
+                int ttarget=NumberUtils.toInt(args[argindex]);
                 props.setProperty("target", ttarget+"");
                 argindex++;
             }
@@ -591,12 +592,12 @@ public class Client
             System.exit(0);
         }
 
-        long maxExecutionTime = Integer.parseInt(props.getProperty(MAX_EXECUTION_TIME, "0"));
+        long maxExecutionTime = NumberUtils.toLong(props.getProperty(MAX_EXECUTION_TIME, "0"));
 
         //get number of threads, target and db
-        threadcount=Integer.parseInt(props.getProperty("threadcount","1"));
+        threadcount=NumberUtils.toInt(props.getProperty("threadcount","1"), 1);
         dbname=props.getProperty("db","com.yahoo.ycsb.BasicDB");
-        target=Integer.parseInt(props.getProperty("target","0"));
+        target=NumberUtils.toInt(props.getProperty("target","0"));
 
         //compute the target throughput
         double targetperthreadperms=-1;
@@ -671,26 +672,42 @@ public class Client
 
         warningthread.interrupt();
 
-        //run the workload
-
-        System.err.println("Starting test.");
-
         int opcount;
         if (dotransactions)
         {
-            opcount=Integer.parseInt(props.getProperty(OPERATION_COUNT_PROPERTY,"0"));
+            opcount=NumberUtils.toInt(props.getProperty(OPERATION_COUNT_PROPERTY,"0"));
         }
         else
         {
             if (props.containsKey(INSERT_COUNT_PROPERTY))
             {
-                opcount=Integer.parseInt(props.getProperty(INSERT_COUNT_PROPERTY,"0"));
+                opcount=NumberUtils.toInt(props.getProperty(INSERT_COUNT_PROPERTY,"0"));
             }
             else
             {
-                opcount=Integer.parseInt(props.getProperty(RECORD_COUNT_PROPERTY,"0"));
+                opcount=NumberUtils.toInt(props.getProperty(RECORD_COUNT_PROPERTY,"0"));
             }
         }
+
+        //args validation
+
+        if (opcount <= 0) {
+            System.err.println("Unsupported number of operations.");
+            System.exit(0);
+        }
+
+        if (threadcount <= 0) {
+            System.err.println("Unsupported threads quantity.");
+            System.exit(0);
+        }
+
+        if (opcount < threadcount) {
+            threadcount = opcount;
+        }
+
+        //run the workload
+
+        System.err.println("Starting test.");
 
         Vector<Thread> threads=new Vector<Thread>();
 

@@ -48,6 +48,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.lang3.math.NumberUtils;
 
 class UuidUtils {
 
@@ -256,13 +257,13 @@ public class MongoDbClient extends DB {
 
             // Set insert batchsize, default 1 - to be YCSB-original equivalent
             final String batchSizeString = props.getProperty("batchsize", "1");
-            BATCHSIZE = Integer.parseInt(batchSizeString);
+            BATCHSIZE = NumberUtils.toInt(batchSizeString, 1);
 
             // allow "string" in addition to "byte" array for data type
             datatype = props.getProperty("datatype","binData");
 
             final String compressibilityString = props.getProperty("compressibility", "1");
-            compressibility = Float.parseFloat(compressibilityString);
+            compressibility = NumberUtils.toFloat(compressibilityString, 1.0f);
 
             // Set connectionpool to size of ycsb thread pool
             final String maxConnections = props.getProperty("threadcount", "100");
@@ -321,15 +322,15 @@ public class MongoDbClient extends DB {
             // encryption - FLE
             boolean use_encryption = Boolean.parseBoolean(props.getProperty("mongodb.fle", "false"));
             boolean remote_schema = Boolean.parseBoolean(props.getProperty("mongodb.remote_schema", "false"));
-            int numEncryptFields = Integer.parseInt(props.getProperty("mongodb.numFleFields", "10"));
+            int numEncryptFields = NumberUtils.toInt(props.getProperty("mongodb.numFleFields", "10"), 10);
 
             try {
                 MongoClientSettings.Builder settingsBuilder = MongoClientSettings.builder();
                 // Need to use a larger connection pool to talk to mongocryptd/keyvault
                 if (use_encryption) {
-                    settingsBuilder.applyToConnectionPoolSettings(builder -> builder.maxSize(Integer.parseInt(maxConnections) * 3));
+                    settingsBuilder.applyToConnectionPoolSettings(builder -> builder.maxSize(NumberUtils.toInt(maxConnections) * 3));
                 } else {
-                    settingsBuilder.applyToConnectionPoolSettings(builder -> builder.maxSize(Integer.parseInt(maxConnections)));
+                    settingsBuilder.applyToConnectionPoolSettings(builder -> builder.maxSize(NumberUtils.toInt(maxConnections)));
                 }
                 settingsBuilder.writeConcern(writeConcern);
                 settingsBuilder.readPreference(readPreference);

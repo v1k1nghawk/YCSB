@@ -17,6 +17,7 @@
 package com.yahoo.ycsb.workloads;
 
 import java.util.Properties;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.yahoo.ycsb.WorkloadException;
 import com.yahoo.ycsb.Client;
@@ -64,9 +65,9 @@ public class ConstantOccupancyWorkload extends CoreWorkload {
     @Override
     public void init(Properties p) throws WorkloadException
     {
-        disksize    = Long.parseLong(    p.getProperty(DISK_SIZE_PROPERTY, DISK_SIZE_PROPERTY_DEFAULT+""));
-        storageages = Long.parseLong(    p.getProperty(STORAGE_AGE_PROPERTY, STORAGE_AGE_PROPERTY_DEFAULT+""));
-        occupancy   = Double.parseDouble(p.getProperty(OCCUPANCY_PROPERTY, OCCUPANCY_PROPERTY_DEFAULT+""));
+        disksize    = NumberUtils.toLong(p.getProperty(DISK_SIZE_PROPERTY, DISK_SIZE_PROPERTY_DEFAULT+""));
+        storageages = NumberUtils.toLong(p.getProperty(STORAGE_AGE_PROPERTY, STORAGE_AGE_PROPERTY_DEFAULT+""));
+        occupancy   = NumberUtils.toDouble(p.getProperty(OCCUPANCY_PROPERTY, OCCUPANCY_PROPERTY_DEFAULT+""));
 
         if(p.getProperty(Client.RECORD_COUNT_PROPERTY) != null ||
            p.getProperty(Client.INSERT_COUNT_PROPERTY) != null ||
@@ -75,7 +76,7 @@ public class ConstantOccupancyWorkload extends CoreWorkload {
         }
         IntegerGenerator g = CoreWorkload.getFieldLengthGenerator(p);
         double fieldsize = g.mean();
-        int fieldcount = Integer.parseInt(p.getProperty(FIELD_COUNT_PROPERTY, FIELD_COUNT_PROPERTY_DEFAULT));
+        int fieldcount = NumberUtils.toInt(p.getProperty(FIELD_COUNT_PROPERTY, FIELD_COUNT_PROPERTY_DEFAULT));
 
         object_count = (long)(occupancy * ((double)disksize / (fieldsize * (double)fieldcount)));
                 if(object_count == 0) {

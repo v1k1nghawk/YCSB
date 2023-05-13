@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.yahoo.ycsb.Utils;
 import com.yahoo.ycsb.generator.IntegerGenerator;
@@ -61,13 +62,13 @@ public class HistogramGenerator extends IntegerGenerator {
     if(line[0].compareTo("BlockSize") != 0) {
         throw new IOException("First line of histogram is not the BlockSize!\n");
     }
-    block_size = Integer.parseInt(line[1]);
+    block_size = NumberUtils.toInt(line[1]);
 
     while((str = in.readLine()) != null){
         // [0] is the bucket, [1] is the value
         line = str.split("\t");
 
-        a.add(Integer.parseInt(line[0]), Integer.parseInt(line[1]));
+        a.add(NumberUtils.toInt(line[0]), NumberUtils.toInt(line[1]));
     }
     buckets = new long[a.size()];
     for(int i = 0; i < a.size(); i++) {

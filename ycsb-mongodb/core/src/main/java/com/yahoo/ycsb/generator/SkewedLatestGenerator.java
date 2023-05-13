@@ -17,6 +17,8 @@
 
 package com.yahoo.ycsb.generator;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
  * Generate a popularity distribution of items, skewed to favor recent items significantly more than older items.
  */
@@ -46,7 +48,7 @@ public class SkewedLatestGenerator extends IntegerGenerator
     public static void main(String[] args)
     {
         SkewedLatestGenerator gen=new SkewedLatestGenerator(new CounterGenerator(1000));
-        for (int i=0; i<Integer.parseInt(args[0]); i++)
+        for (int i=0; i<NumberUtils.toInt(args[0]); i++)
         {
             System.out.println(gen.nextString());
         }

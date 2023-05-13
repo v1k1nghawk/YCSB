@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Enumeration;
 import java.util.Vector;
+import org.apache.commons.lang3.math.NumberUtils;
 
 
 /**
@@ -68,7 +69,7 @@ public class BasicDB extends DB
     public void init()
     {
         verbose=Boolean.parseBoolean(getProperties().getProperty(VERBOSE, VERBOSE_DEFAULT));
-        todelay=Integer.parseInt(getProperties().getProperty(SIMULATE_DELAY, SIMULATE_DELAY_DEFAULT));
+        todelay=NumberUtils.toInt(getProperties().getProperty(SIMULATE_DELAY, SIMULATE_DELAY_DEFAULT));
 
         if (verbose)
         {

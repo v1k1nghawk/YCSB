@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Vector;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.yahoo.ycsb.workloads.*;
 
@@ -323,7 +324,7 @@ public class CommandLine
           }
 
           Vector<HashMap<String,ByteIterator>> results=new Vector<HashMap<String,ByteIterator>>();
-          int ret=db.scan(table,tokens[1],Integer.parseInt(tokens[2]),fields,results);
+          int ret=db.scan(table,tokens[1],NumberUtils.toInt(tokens[2]),fields,results);
           System.out.println("Return code: "+ret);
           int record=0;
           if (results.size()==0)

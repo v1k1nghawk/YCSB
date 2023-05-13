@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Properties;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
 
@@ -54,7 +55,7 @@ public class OneMeasurementHistogram extends OneMeasurement
     public OneMeasurementHistogram(String name, Properties props)
     {
         super(name);
-        _buckets=Integer.parseInt(props.getProperty(BUCKETS, BUCKETS_DEFAULT));
+        _buckets=NumberUtils.toInt(props.getProperty(BUCKETS, BUCKETS_DEFAULT));
         histogram=new int[_buckets];
         histogramoverflow=0;
         operations=0;
